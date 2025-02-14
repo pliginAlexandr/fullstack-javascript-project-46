@@ -8,6 +8,5 @@ const parceData = (filepath) => {
     return JSON.parse(data);
   }
   throw new Error('Unsupported extension!');
-  
 };
 export default parceData;
