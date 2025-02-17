@@ -17,10 +17,6 @@ test('genddiff', () => {
   )).toBe(fixture1);
 });
 
-test('parcer throws error on unsupported extension', () => {
-  expect(() => parseData('file.yaml')).toThrow('Unsupported extension!');
-});
-
 test('parcer correctly parses JSON', () => {
   const fixture2 = parseData('__fixtures__/file1.json');
   expect(fixture2).toEqual({
@@ -29,4 +25,18 @@ test('parcer correctly parses JSON', () => {
     proxy: '123.234.53.22',
     follow: false,
   });
+});
+
+test('parcer correctly parses YAML', () => {
+  const yamlFixture = parseData('__fixtures__/yamlfile1.yaml');
+  expect(yamlFixture).toEqual({
+    host: 'hexlet.io',
+    timeout: 50,
+    proxy: '123.234.53.22',
+    follow: false,
+  });
+});
+
+test('parcer throws error on unsupported extension', () => {
+  expect(() => parseData('result.txt')).toThrow('Unsupported extension!');
 });
