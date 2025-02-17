@@ -1,22 +1,37 @@
-name: Testing new commit
+name: CI Pipeline
+
 on:
   push:
-    branches:
-    - main
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18.x'
-          cache: 'npm'
-          uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          
-      - run: make install
-      - run: make lint
-      - run: make test
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage
+
+      - name: Upload coverage to CodeClimate
+        run: |
+          ./cc-test-reporter before-build
+          npm test -- --coverage
+          ./cc-test-reporter after-build --exit-code $?
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
