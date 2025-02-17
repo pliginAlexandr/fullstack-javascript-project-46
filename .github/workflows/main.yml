@@ -20,10 +20,10 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run linter
-        run: npm run lint
+        run: make lint
 
       - name: Run tests with coverage
         run: npm test -- --coverage
