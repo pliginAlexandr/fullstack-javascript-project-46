@@ -27,8 +27,12 @@ jobs:
 
       - name: Run tests with coverage
         run: npm test -- --coverage
+      - name: Download CodeClimate Test Reporter
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > cc-test-reporter
+          chmod +x cc-test-reporter
 
-      - name: Upload coverage to CodeClimate
+      - name: Run CodeClimate Test Reporter
         run: |
           ./cc-test-reporter before-build
           npm test -- --coverage
