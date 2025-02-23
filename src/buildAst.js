@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const buildDiff = (obj1, obj2) => {
+const buildAst = (obj1, obj2) => {
   const keys = [...new Set([...Object.keys(obj1), ...Object.keys(obj2)])].sort();
 
   return keys.map((key) => {
@@ -11,7 +11,7 @@ const buildDiff = (obj1, obj2) => {
       return { key, type: 'removed', value: obj1[key] };
     }
     if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
-      return { key, type: 'nested', children: buildDiff(obj1[key], obj2[key]) };
+      return { key, type: 'nested', children: buildAst(obj1[key], obj2[key]) };
     }
     if (!_.isEqual(obj1[key], obj2[key])) {
       return {
@@ -22,4 +22,4 @@ const buildDiff = (obj1, obj2) => {
   });
 };
 
-export default buildDiff;
+export default buildAst;
