@@ -15,7 +15,6 @@ test('genddiff', () => {
     getFixturePath('file1.json'),
     getFixturePath('file2.json'),
   );
-  console.log(result); // Для отладки
   expect(result.trim()).toEqual(fixture1.trim());
 });
 
