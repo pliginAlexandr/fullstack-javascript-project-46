@@ -11,7 +11,6 @@ const parseData = (filepath) => {
     return JSON.parse(data);
   } if (filetype === '.yml' || filetype === '.yaml') {
     const data = readData(filepath);
-    console.log(yaml.load(data));
     return yaml.load(data);
   }
   throw new Error('Unsupported extension!');

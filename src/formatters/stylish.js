@@ -1,32 +1,50 @@
-const stylish = (diff) => {
-  const iter = (node, depth) => {
-    const indent = ' '.repeat(depth * 2);
-    const lines = node.map((item) => {
-      const { key } = item;
-      const value = (typeof item.value === 'object' && item.value !== null)
-        ? JSON.stringify(item.value)
-        : item.value;
+const indentSize = 4;
+const indentShift = 2;
 
-      switch (item.status) {
-        case 'added':
-          return `${indent}+ ${key}: ${value}`;
-        case 'removed':
-          return `${indent}- ${key}: ${value}`;
-        case 'changed':
-          return `${indent}- ${key}: ${item.oldValue}\n${indent}+ ${key}: ${item.newValue}`;
-        case 'unchanged':
-          return `${indent}  ${key}: ${value}`;
-        case 'nested':
-          return `${indent}  ${key}: {\n${iter(item.children, depth + 1)}\n${indent}  }`;
-        default:
-          return '';
-      }
-    }).filter(Boolean); // Убираем пустые строки
+const getIndent = (depth) => ' '.repeat(depth * indentSize - indentShift);
+const getBracketIndent = (depth) => ' '.repeat(depth * indentSize - indentSize);
 
-    return lines.join('\n'); // Соединяем строки с переносами
-  };
+const stringify = (value, depth) => {
+  if (typeof value !== 'object' || value === null) {
+    return String(value);
+  }
 
-  return `{\n${iter(diff, 1)}\n}`;
+  const entries = Object.entries(value).map(([key, val]) => `${getIndent(depth + 1)}  ${key}: ${stringify(val, depth + 1)}`);
+
+  return `{
+${entries.join('\n')}
+${getBracketIndent(depth)}}`;
 };
 
-export default stylish;
+const stylish = (diff, depth = 1) => {
+  const formatted = diff.map(({
+    key, type, value, oldValue, newValue, children,
+  }) => {
+    const indent = getIndent(depth);
+    switch (type) {
+      case 'added':
+        return `${indent}+ ${key}: ${stringify(value, depth)}`;
+      case 'removed':
+        return `${indent}- ${key}: ${stringify(value, depth)}`;
+      case 'updated':
+        return [
+          `${indent}- ${key}: ${stringify(oldValue, depth)}`,
+          `${indent}+ ${key}: ${stringify(newValue, depth)}`,
+        ].join('\n');
+      case 'unchanged':
+        return `${indent}  ${key}: ${stringify(value, depth)}`;
+      case 'nested':
+        return `${indent}  ${key}: {
+${stylish(children, depth + 1)}
+${getBracketIndent(depth)}}`;
+      default:
+        throw new Error(`Unknown node type: ${type}`);
+    }
+  });
+
+  return formatted.join('\n');
+};
+
+export default (diff) => `{
+${stylish(diff, 1)}
+}`;
