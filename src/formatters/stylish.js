@@ -1,50 +1,47 @@
-const indentSize = 4;
-const indentShift = 2;
+import _ from 'lodash';
 
-const getIndent = (depth) => ' '.repeat(depth * indentSize - indentShift);
-const getBracketIndent = (depth) => ' '.repeat(depth * indentSize - indentSize);
+const getIndent = (spaseCount, bracket = ' ', bracketNumbers = 4) => bracket
+  .repeat(bracketNumbers * spaseCount - bracketNumbers);
 
-const stringify = (value, depth) => {
-  if (typeof value !== 'object' || value === null) {
-    return String(value);
-  }
-
-  const entries = Object.entries(value).map(([key, val]) => `${getIndent(depth + 1)}  ${key}: ${stringify(val, depth + 1)}`);
-
-  return `{
-${entries.join('\n')}
-${getBracketIndent(depth)}}`;
-};
-
-const stylish = (diff, depth = 1) => {
-  const formatted = diff.map(({
-    key, type, value, oldValue, newValue, children,
-  }) => {
-    const indent = getIndent(depth);
-    switch (type) {
-      case 'added':
-        return `${indent}+ ${key}: ${stringify(value, depth)}`;
-      case 'removed':
-        return `${indent}- ${key}: ${stringify(value, depth)}`;
-      case 'updated':
-        return [
-          `${indent}- ${key}: ${stringify(oldValue, depth)}`,
-          `${indent}+ ${key}: ${stringify(newValue, depth)}`,
-        ].join('\n');
-      case 'unchanged':
-        return `${indent}  ${key}: ${stringify(value, depth)}`;
-      case 'nested':
-        return `${indent}  ${key}: {
-${stylish(children, depth + 1)}
-${getBracketIndent(depth)}}`;
-      default:
-        throw new Error(`Unknown node type: ${type}`);
+const stringify = (obj, replace) => {
+  const iter = (data, depth) => {
+    if (!_.isObject(data)) {
+      return `${data}`;
     }
-  });
-
-  return formatted.join('\n');
+    const spaseCount = depth * replace;
+    const spase = getIndent(spaseCount);
+    const lines = Object
+      .entries(data)
+      .map(([key, value]) => `${spase}        ${key}: ${iter(value, depth + 1)}`);
+    return ['{', ...lines, `${spase}    }`].join('\n');
+  };
+  return iter(obj, 1);
 };
 
-export default (diff) => `{
-${stylish(diff, 1)}
-}`;
+const stylish = (obj) => {
+  const iter = (data, depth = 1) => {
+    const indent = getIndent(depth);
+    const result = data.map((element) => {
+      switch (element.type) {
+        case 'removed':
+          return `${indent}  - ${element.key}: ${stringify(element.value, depth)}`;
+        case 'added':
+          return `${indent}  + ${element.key}: ${stringify(element.value, depth)}`;
+        case 'changed':
+          return [
+            `${indent}  - ${element.key}: ${stringify(element.value1, depth)}`,
+            `${indent}  + ${element.key}: ${stringify(element.value2, depth)}`,
+          ].join('\n');
+        case 'unchanged':
+          return `${indent}    ${element.key}: ${stringify(element.value, depth)}`;
+        case 'nested':
+          return `${indent}    ${element.key}: ${iter(element.children, depth + 1)}`;
+        default:
+          throw new Error(`${element.type} is not a valid value`);
+      }
+    });
+    return ['{', ...result, `${indent}}`].join('\n');
+  };
+  return iter(obj);
+};
+export default stylish;
