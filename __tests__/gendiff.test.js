@@ -3,6 +3,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import parseData from '../src/parser.js';
 import gendiff from '../src/gendiff.js';
+import stylish from '../src/formatters/stylish.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -60,4 +61,21 @@ test('parcer correctly parses YAML', () => {
 
 test('parcer throws error on unsupported extension', () => {
   expect(() => parseData('result.txt')).toThrow('Unsupported extension!');
+});
+
+test('gendiff should throw error for unsupported stylisher', () => {
+  const format = 'foobar';
+  expect(() => gendiff('__fixtures__/file1.json', '__fixtures__/file2.json', format)).toThrow(`Unknown format: ${format}`);
+});
+
+test('throws an error for an invalid type', () => {
+  const input = [
+    {
+      key: 'invalid',
+      type: 'unknown',
+      value: 'someValue',
+    },
+  ];
+
+  expect(() => stylish(input)).toThrow('unknown is not a valid value');
 });
