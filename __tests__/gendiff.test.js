@@ -79,3 +79,13 @@ test('throws an error for an invalid type', () => {
 
   expect(() => stylish(input)).toThrow('unknown is not a valid value');
 });
+
+test('plain format is correct', () => {
+  const plainResult = gendiff(
+    getFixturePath('file1.json'),
+    getFixturePath('file2.json'),
+    'plain',
+  );
+  const fixture3 = fs.readFileSync(getFixturePath('plainResult.txt'), 'utf-8');
+  expect(plainResult).toEqual(fixture3)
+});
