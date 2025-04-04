@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import parseData from '../src/parser.js';
 import gendiff from '../src/gendiff.js';
 import stylish from '../src/formatters/stylish.js';
+import formatPlain from '../src/formatters/plain.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -88,4 +89,15 @@ test('plain format is correct', () => {
   );
   const fixture3 = fs.readFileSync(getFixturePath('plainResult.txt'), 'utf-8');
   expect(plainResult).toEqual(fixture3);
+});
+
+test('plain format should throw error for an invalid type', () => {
+  const inputPlane = [
+    {
+      key: 'invalid',
+      type: 'unknown',
+      value: 'someValue',
+    },
+  ];
+  expect(() => formatPlain(inputPlane)).toThrow('Unknown node type: unknown');
 });
