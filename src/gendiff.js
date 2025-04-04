@@ -1,21 +1,13 @@
 import parseData from './parser.js';
-import stylish from './formatters/stylish.js';
 import buildAst from './buildAst.js';
-import formatPlain from './formatters/plain.js';
+import getFormatter from './formatters/index.js';
 
-const gendiff = (filepath1, filepath2, format = 'stylish') => {
+const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
   const data1 = parseData(filepath1);
   const data2 = parseData(filepath2);
-  const ast = buildAst(data1, data2);
-
-  switch (format) {
-    case 'stylish':
-      return stylish(ast);
-    case 'plain':
-      return formatPlain(ast);
-    default:
-      throw new Error(`Unknown format: ${format}`);
-  }
+  const diffTree = buildAst(data1, data2);
+  const formatter = getFormatter(formatName);
+  return formatter(diffTree);
 };
 
-export default gendiff;
+export default genDiff;
