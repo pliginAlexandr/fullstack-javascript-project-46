@@ -87,5 +87,5 @@ test('plain format is correct', () => {
     'plain',
   );
   const fixture3 = fs.readFileSync(getFixturePath('plainResult.txt'), 'utf-8');
-  expect(plainResult).toEqual(fixture3)
+  expect(plainResult).toEqual(fixture3);
 });

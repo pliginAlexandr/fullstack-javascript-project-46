@@ -1,7 +1,7 @@
 import parseData from './parser.js';
 import stylish from './formatters/stylish.js';
 import buildAst from './buildAst.js';
-import formatPlain from './formatters/plain.js'; 
+import formatPlain from './formatters/plain.js';
 
 const gendiff = (filepath1, filepath2, format = 'stylish') => {
   const data1 = parseData(filepath1);
