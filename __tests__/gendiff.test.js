@@ -101,3 +101,10 @@ test('plain format should throw error for an invalid type', () => {
   ];
   expect(() => formatPlain(inputPlane)).toThrow('Unknown node type: unknown');
 });
+
+test('gendiff json format', () => {
+  const filepath1 = getFixturePath('file1.json');
+  const filepath2 = getFixturePath('file2.json');
+  const fixture4 = fs.readFileSync(getFixturePath('jsonResult.txt'), 'utf-8');
+  expect(gendiff(filepath1, filepath2, 'json')).toBe(fixture4);
+});
