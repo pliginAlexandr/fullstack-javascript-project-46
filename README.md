@@ -82,3 +82,13 @@ make test-coverage
 make lint
 ```
 
+### Asciinemas
+#### Gendiff -h
+[![asciicast](https://asciinema.org/a/c99Lsg5i414B9scEvlDEewm7k.svg)](https://asciinema.org/a/c99Lsg5i414B9scEvlDEewm7k)
+#### Gendiff stylish
+[![asciicast](https://asciinema.org/a/l81GgF4zk7vQ0YOdOJGaqHRFo.svg)](https://asciinema.org/a/l81GgF4zk7vQ0YOdOJGaqHRFo)
+#### Gendiff plain
+[![asciicast](https://asciinema.org/a/6hh15YLXFUeaLIdjlBd9aMmIu.svg)](https://asciinema.org/a/6hh15YLXFUeaLIdjlBd9aMmIu)
+#### Gendiff json
+[![asciicast](https://asciinema.org/a/mXtlFt5gILI8YrTSsIAdx6ZIt.svg)](https://asciinema.org/a/mXtlFt5gILI8YrTSsIAdx6ZIt)
+
