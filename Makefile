@@ -1,5 +1,6 @@
 install: # Dependencies installation
 	npm ci
+	npm link
 
 lint: #eslint launch
 	npx eslint .
